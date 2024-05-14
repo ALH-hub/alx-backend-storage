@@ -3,10 +3,11 @@
 from pymongo import MongoClient
 
 
-def log_stats():
+client = MongoClient()
+logs = client.logs.nginx
+
+if __name__ == "__main__":
     """log stats"""
-    client = MongoClient()
-    logs = client.logs.nginx
     print(f'{logs.count_documents({})} logs')
     print('Methods:')
     print(f'\tmethod GET: {logs.count_documents({"method": "GET"})}')
@@ -14,11 +15,5 @@ def log_stats():
     print(f'\tmethod PUT: {logs.count_documents({"method": "PUT"})}')
     print(f'\tmethod PATCH: {logs.count_documents({"method": "PATCH"})}')
     print(f'\tmethod DELETE: {logs.count_documents({"method": "DELETE"})}')
-    print(f'{logs.count_documents({
-        "method": "GET",
-        "path": "/status"
-        })} status check')
-
-
-if __name__ == "__main__":
-    log_stats()
+    stats = logs.count_documents({"method": "GET", "path": "/status"})
+    print(f'{stats} status check')
