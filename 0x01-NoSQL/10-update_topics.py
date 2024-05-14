@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """update documents in a collection"""
-import pymongo
 
 
 def update_topics(mongo_collection, name, topics):
