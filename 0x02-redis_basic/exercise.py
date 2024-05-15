@@ -16,7 +16,7 @@ def count_calls(method: Callable) -> Callable:
         """wrapper function"""
         self._redis.incr(func)
         return method(self, *args, **kwargs)
-    
+
     return wrapper
 
 
