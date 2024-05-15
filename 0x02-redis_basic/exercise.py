@@ -19,6 +19,7 @@ def count_calls(method: Callable) -> Callable:
 
     return wrapper
 
+
 def call_history(method: Callable) -> Callable:
     """decorator to store the history of inputs and outputs for a function"""
     func = method.__qualname__
@@ -66,9 +67,18 @@ class Cache:
         """return integer representation of val from get method """
         return int.from_bytes(val, byteorder='big')
 
-    def replay(self):
-        """replay the history of calls of the store method"""
-        inputs = self._redis.lrange("store:inputs", 0, -1)
-        outputs = self._redis.lrange("store:outputs", 0, -1)
-        for i, o in zip(inputs, outputs):
-            print(f"store({i.decode('utf-8')}) -> {o.decode('utf-8')}")
+
+def replay(method: Callable) -> None:
+    """display the history of calls of a particular function"""
+    func = method.__qualname__
+    inputs = f"{func}:inputs"
+    outputs = f"{func}:outputs"
+    redis = method.__self__._redis
+    count = redis.get(func).decode('utf-8')
+    print(f"{func} was called {count} times:")
+
+    inputs_list = redis.lrange(inputs, 0, -1)
+    outputs_list = redis.lrange(outputs, 0, -1)
+
+    for i, o in zip(inputs_list, outputs_list):
+        print(f"{func}(*{i.decode('utf-8')}) -> {o.decode('utf-8')}")
