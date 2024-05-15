@@ -68,7 +68,7 @@ class Cache:
         return int.from_bytes(val, byteorder='big')
 
 
-def replay(method: Callable) -> None:
+def replay(method: Callable):
     """display the history of calls of a particular function"""
     func = method.__qualname__
     inputs = f"{func}:inputs"
